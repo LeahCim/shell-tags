@@ -1,9 +1,16 @@
 #!/bin/bash
 
+function init_dir() {
+  if [ ! -d "$1" ]; then
+    mkdir -p "$DIR_TAG"
+  fi
+}
+
 # Command completion for the go() function
 _go() {
-  local -r DIR_TAG=$HOME/.go/tags/directory
   local cur
+  local -r DIR_TAG=$HOME/.go/tags/directory
+  init_dir "$DIR_TAG"
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   COMPREPLY=( $(compgen -W  "$(\ls "$DIR_TAG")" -- "$cur") )
@@ -13,7 +20,9 @@ complete -F _go go
 
 function go() {
   # LIST is read-only and local to the function
-  declare -r DIR_TAG=$HOME/.go/tags/directory
+  local -r DIR_TAG=$HOME/.go/tags/directory
+  init_dir "$DIR_TAG"
+
   if [ -z $1 ]; then
     ls "$DIR_TAG"
   elif [ -L "$DIR_TAG/$1" ] && [ -d $(readlink "$DIR_TAG/$1") ]; then

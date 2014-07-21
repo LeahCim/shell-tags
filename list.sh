@@ -19,6 +19,9 @@ complete -F _list list
 function list() {
   # LIST is read-only and local to the function
   declare -r TAGS=$HOME/.go/tags
+  if [ ! -d "$TAGS" ]; then
+    mkdir -p "$TAGS"
+  fi
 
   if [ -z $1 ]; then
     ls "$TAGS"
